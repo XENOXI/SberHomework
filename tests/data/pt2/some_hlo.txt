@@ -1,0 +1,21 @@
+module @jit_func attributes {jax.uses_shape_polymorphism = false, mhlo.num_partitions = 1 : i32, mhlo.num_replicas = 1 : i32} {
+  func.func public @main(%arg0: tensor<30x20xf32> loc("states[0]"), %arg1: tensor<30xf32> loc("states[1]"), %arg2: tensor<1x20xf32> loc("inputs[0][0]")) -> (tensor<1x30xf32> {jax.result_info = "result[0]"}) {
+    %cst = stablehlo.constant dense<1.000000e+00> : tensor<f32> loc(#loc)
+    %0 = stablehlo.transpose %arg0, dims = [1, 0] : (tensor<30x20xf32>) -> tensor<20x30xf32> loc(#loc39)
+    %1 = stablehlo.broadcast_in_dim %cst, dims = [] : (tensor<f32>) -> tensor<30xf32> loc(#loc40)
+    %2 = stablehlo.multiply %arg1, %1 : tensor<30xf32> loc(#loc40)
+    %3 = stablehlo.dot_general %arg2, %0, contracting_dims = [1] x [0] : (tensor<1x20xf32>, tensor<20x30xf32>) -> tensor<1x30xf32> loc(#loc41)
+    %4 = stablehlo.broadcast_in_dim %cst, dims = [] : (tensor<f32>) -> tensor<1x30xf32> loc(#loc42)
+    %5 = stablehlo.multiply %4, %3 : tensor<1x30xf32> loc(#loc42)
+    %6 = stablehlo.broadcast_in_dim %2, dims = [1] : (tensor<30xf32>) -> tensor<1x30xf32> loc(#loc43)
+    %7 = stablehlo.add %6, %5 : tensor<1x30xf32> loc(#loc44)
+    %8 = call @relu(%7) : (tensor<1x30xf32>) -> tensor<1x30xf32> loc(#loc45)
+    return %8 : tensor<1x30xf32> loc(#loc)
+  } loc(#loc)
+  func.func private @relu(%arg0: tensor<1x30xf32> loc("jit(func)/jit(main)/pjit"(#loc38))) -> tensor<1x30xf32> {
+    %cst = stablehlo.constant dense<0.000000e+00> : tensor<f32> loc(#loc45)
+    %0 = stablehlo.broadcast_in_dim %cst, dims = [] : (tensor<f32>) -> tensor<1x30xf32> loc(#loc46)
+    %1 = stablehlo.maximum %arg0, %0 : tensor<1x30xf32> loc(#loc46)
+    return %1 : tensor<1x30xf32> loc(#loc45)
+  } loc(#loc45)
+} loc(#loc)

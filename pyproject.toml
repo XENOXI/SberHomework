@@ -1,0 +1,33 @@
+[project]
+name = "SberHomework"
+version = "0.1.0"
+requires-python = "==3.10.*"
+dependencies = [
+    "flax>=0.10.7",
+    "jax>=0.6.2",
+    "torch>=2.11.0",
+    "torch-xla>=2.9.0",
+    "transformers>=5.7.0",
+    "mlir",
+    "stablehlo"
+]
+
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=9.0.3",
+]
+
+[tool.uv.sources]
+mlir = { index = "mlir-wheels" }
+stablehlo = { index = "stablehlo-wheels"}
+
+[[tool.uv.index]]
+name = "mlir-wheels"
+url = "https://github.com/makslevental/mlir-wheels/releases/expanded_assets/latest"
+explicit = true
+
+[[tool.uv.index]]
+name = "stablehlo-wheels"
+url = "https://github.com/openxla/stablehlo/releases/expanded_assets/dev-wheels"
+explicit = true
