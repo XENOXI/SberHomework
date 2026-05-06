@@ -57,7 +57,7 @@ def call_program(model_file: Path) -> tuple[str, str, str]:
         result = subprocess.run(
             [
                 sys.executable,
-                "main.py",
+                str(Path(__file__).parent.parent / "main.py"),
                 "--model", str(model_file),
                 "--out", tempdir,
             ],
